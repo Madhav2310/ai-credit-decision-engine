@@ -5,6 +5,7 @@ from .database import engine, SessionLocal, Base
 from .db_models import BorrowerRecord, DecisionLog
 from .cache import redis_client
 from .agents.decision_agent import decision_agent
+from .simulation.borrower_simulator import run_simulation
 
 # create tables automatically if they don't exist
 Base.metadata.create_all(bind=engine)
@@ -78,3 +79,10 @@ def recommend_action(borrower: Borrower):
         "recommended_action": action,
         "repayment_belief": borrower.repayment_belief,
     }
+
+@app.post("/simulate")
+def simulate(n: int = 1000):
+
+    results = run_simulation(n)
+
+    return results
