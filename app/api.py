@@ -1,19 +1,21 @@
 from fastapi import FastAPI
 from .models import Borrower
-from .decision_engine import update_belief, choose_best_action
 
 from .database import engine, SessionLocal, Base
 from .db_models import BorrowerRecord, DecisionLog
 from .cache import redis_client
+from .agents.decision_agent import decision_agent
+
 # create tables automatically if they don't exist
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Credit Decision Engine")
+app = FastAPI(title="AI Credit Decision Engine")
 
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
 
 @app.post("/recommend_action")
 def recommend_action(borrower: Borrower):
@@ -30,9 +32,15 @@ def recommend_action(borrower: Borrower):
     if borrower.workflow_stage == "closed_repaid":
         return {"message": "Borrower already closed"}
 
-    # run decision engine
-    update_belief(borrower)
-    action = choose_best_action(borrower)
+    # -------- CALL THE AGENT --------
+
+    state = borrower.dict()
+
+    result = decision_agent.invoke(state)
+
+    action = result["action"]
+
+    # --------------------------------
 
     # store belief in Redis (TTL = 1 hour)
     redis_client.set(cache_key, borrower.repayment_belief, ex=3600)
