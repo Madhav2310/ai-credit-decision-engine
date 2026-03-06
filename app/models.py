@@ -20,5 +20,11 @@ class Borrower(BaseModel):
     promise_to_pay_flag: bool
 
     repayment_belief: float
-    workflow_stage: Literal["fresh_overdue", "closed_repaid"]
+    workflow_stage: Literal[
+    "fresh_overdue",
+    "soft_collection",
+    "hard_collection",
+    "legal",
+    "closed_repaid"
+]
     interventions_used: int

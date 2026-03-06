@@ -35,11 +35,11 @@ def recommend_action(borrower: Borrower):
 
     # -------- CALL THE AGENT --------
 
-    state = borrower.dict()
+    state = borrower.model_dump()
 
-    result = decision_agent.invoke(state)
+    result = decision_agent.invoke(state) or {}
 
-    action = result["action"]
+    action = result.get("action", "send_sms")
 
     # --------------------------------
 

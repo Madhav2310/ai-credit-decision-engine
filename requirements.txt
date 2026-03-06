@@ -7,3 +7,5 @@ redis
 langgraph
 langchain
 openai
+langchain-ollama
+langsmith
