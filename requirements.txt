@@ -6,6 +6,7 @@ sqlalchemy
 redis
 langgraph
 langchain
+langchain-openai
 openai
 langchain-ollama
 langsmith
