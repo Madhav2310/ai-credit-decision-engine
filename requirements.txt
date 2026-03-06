@@ -9,3 +9,4 @@ langchain
 openai
 langchain-ollama
 langsmith
+graphviz
